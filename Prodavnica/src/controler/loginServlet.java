@@ -6,8 +6,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import buissnesServices.LoginMetode;
+import model.Admin;
+import model.User;
 
 /**
  * Servlet implementation class loginServlet
@@ -30,11 +33,24 @@ public class loginServlet extends HttpServlet {
 			//proveri password 
 			
 	if (metode.daLiJeDobarPassowrd(userName, password)){
-				//nastavljam
-		    if (metode.vratiUsera(userName, password)!=null) {
+			User user =metode.vratiUsera(userName, password);
+		    if (user !=null) {
+		    	
+		    	HttpSession sesija = request.getSession();
+		    	sesija.setAttribute("ovdeCuvamUsera", user);
+		    	
+		    	Admin admin =new Admin ();
+		    	
+		    	if (userName.equals(admin.getAdminUserName()) && password.equals(admin.getAdminPassword())) {
+		    		response.sendRedirect("jsp/admin.jsp");
+		    	}else {
+		    		response.sendRedirect("jsp/user.jsp");
+		    	}
+		    	
+		    	
 		    	
 		    }else {
-		    	response.sendRedirect("error.html");
+		    	response.sendRedirect("loginError.html");
 		    }
 		
 		
